@@ -24,6 +24,7 @@
   #:use-module (hoot ffi)
   #:export (get-context
             set-fill-color!
+            set-stroke-color!
             set-font!
             set-text-align!
             clear-rect
@@ -32,7 +33,13 @@
             draw-image
             set-scale!
             set-transform!
-            set-image-smoothing-enabled!))
+            set-image-smoothing-enabled!
+            fill
+            stroke
+            begin-path
+            rect
+            ellipse
+            close-path))
 
 ;; HTMLCanvasElement
 (define-foreign get-context
@@ -42,6 +49,9 @@
 ;; CanvasRenderingContext2D
 (define-foreign set-fill-color!
   "canvas" "setFillColor"
+  (ref extern) (ref string) -> none)
+(define-foreign set-stroke-color!
+  "canvas" "setStrokeColor"
   (ref extern) (ref string) -> none)
 (define-foreign set-font!
   "canvas" "setFont"
@@ -70,3 +80,21 @@
 (define-foreign set-image-smoothing-enabled!
   "canvas" "setImageSmoothingEnabled"
   (ref extern) i32 -> none)
+(define-foreign fill
+  "canvas" "fill"
+  (ref extern) (ref string) -> none)
+(define-foreign stroke
+  "canvas" "stroke"
+  (ref extern) -> none)
+(define-foreign begin-path
+  "canvas" "beginPath"
+  (ref extern) -> none)
+(define-foreign rect
+  "canvas" "rect"
+  (ref extern) f64 f64 f64 f64 -> none)
+(define-foreign ellipse
+  "canvas" "ellipse"
+  (ref extern) f64 f64 f64 f64 f64 f64 f64 i32 -> none)
+(define-foreign close-path
+  "canvas" "closePath"
+  (ref extern) -> none)

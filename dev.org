@@ -19,8 +19,24 @@ In-game units are nautical miles and seconds
 Object structure:
 - <entity>
   - <rock>
-  - <ship>
+  - <player>
+  - <enemy>
+  - <base>
 
 * Name
 
 "Quiet Walking" is one, though the movie isn't actually about submarines. Consider: "The Hunt for Mauve July"
+
+* Log
+
+Next steps:
+- make a "rock" to ping sonar off
+
+I'm missing something about how paths in canvas work. right now filling an ellipse only works if I double-draw it, which is super weird.
+- Nope, it wasn't canvas, it was something fucky with (ellipse)'s argument types!
+
+  (ellipse context 100 100 50 75 (/ %pi 4) 0 (* 2 %pi) 0)
+  becomes
+  Ellipse 4.94e-322 4.94e-322 2.47e-322 3.7e-322 0.7853981633974483 0 6.283185307179586 0
+
+  which I'm assuming is a miscompile. Lesson learned for now, ensure I'm passing floats to extern calls that need floats.

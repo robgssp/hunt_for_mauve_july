@@ -56,6 +56,7 @@ window.addEventListener("load", async () => {
       canvas: {
         getContext: (elem, type) => elem.getContext(type),
         setFillColor: (ctx, color) => ctx.fillStyle = color,
+        setStrokeColor: (ctx, color) => ctx.strokeStyle = color,
         setFont: (ctx, font) => ctx.font = font,
         setTextAlign: (ctx, align) => ctx.textAlign = align,
         clearRect: (ctx, x, y, w, h) => ctx.clearRect(x, y, w, h),
@@ -64,7 +65,13 @@ window.addEventListener("load", async () => {
         drawImage: (ctx, image, sx, sy, sw, sh, dx, dy, dw, dh) => ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh),
         setScale: (ctx, sx, sy) => ctx.scale(sx, sy),
         setTransform: (ctx, a, b, c, d, e, f) => ctx.setTransform(a, b, c, d, e, f),
-        setImageSmoothingEnabled: (ctx, enabled) => ctx.imageSmoothingEnabled = (enabled == 1)
+        setImageSmoothingEnabled: (ctx, enabled) => ctx.imageSmoothingEnabled = (enabled == 1),
+        fill: (ctx, rule) => ctx.fill(rule),
+        stroke: (ctx) => ctx.stroke(),
+        beginPath: (ctx) => ctx.beginPath(),
+        rect: (ctx, x, y, w, h) => ctx.rect(x, y, w, h),
+        ellipse: (ctx, x, y, radiusX, radiusY, rotation, startAngle, endAngle, counterclockwise) => ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, (counterclockwise > 0)),
+        closePath: (ctx) => ctx.closePath()
       },
       math: {
         random: () => Math.random()

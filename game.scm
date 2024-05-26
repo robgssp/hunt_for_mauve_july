@@ -81,18 +81,27 @@
 (define (make-ping* origin)
   (make-ping origin 0 (make-vector 100 #t)))
 
+(define-record-type <player>
+  (make-player loc direction)
+  player?
+  (loc player-loc set-player-loc!)
+  (direction player-direction set-player-direction!))
+
+(define-record-type <entity>
+  (make-entity origin radius)
+  entity?
+  (origin entity-origin)
+  (radius entity-radius))
+
+
+;;;
+;;; Main Loops
+;;;
 
 (define pings '())
 
 (define last-tick-time (current-time))
 (define last-ping-time (current-time))
-
-;; (define-record-type <entity>
-;;   (make-entity origin radius))
-
-;;;
-;;; Main Loops
-;;;
 
 (define (tick)
   (let* ((time (current-time))
@@ -145,13 +154,28 @@
     (fill-rect context 0 0 game-width game-height)
 
     (set-fill-color! context "#ffffff")
-    (set-font! context "bold 12px monospace")
-    (set-text-align! context "left")
-    (fill-text context (string-append (number->string (/ 1 (- frame-time last-frame-time)))
-                                      " FPS")
-               20.0 20.0)
 
-    (for-each draw-ping pings)
+
+    ;; (set-font! context "bold 12px monospace")
+    ;; (set-text-align! context "left")
+    ;; (fill-text context (string-append (number->string (/ 1 (- frame-time last-frame-time)))
+    ;;                                   " FPS")
+    ;;            20.0 20.0)
+
+
+    ;; (for-each draw-ping pings)
+
+    (set-fill-color! context "#ffffff")
+    (set-stroke-color! context "#ffffff")
+
+    (begin-path context)
+    (ellipse context 100.0 100.0 50.0 75.0 (/ %pi 4) 0.0 (* 2 %pi) 0)
+    ;; (ellipse context 100 100 50 75 (/ %pi 4) 0 (* 2 %pi) 0)
+    ;; (rect context 100 200 300 400)
+    ;; (rect context 100 200 400 400)
+    (close-path context)
+    ;; (stroke context)
+    (fill context "evenodd")
 
     (set! last-frame-time frame-time)
 
