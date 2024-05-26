@@ -33,6 +33,7 @@
             vec2-y
             set-vec2-x!
             set-vec2-y!
+            vec2-copy
             vec2-add!
             vec2-sub!
             vec2-mul-scalar!
@@ -67,6 +68,9 @@
 
 (define (set-vec2-y! v y)
   (f64-set! (vec2-bv v) 8 y))
+
+(define (vec2-copy v)
+  (vec2 (vec2-x v) (vec2-y v)))
 
 (define (vec2-add! v w)
   (set-vec2-x! v (+ (vec2-x v) (vec2-x w)))

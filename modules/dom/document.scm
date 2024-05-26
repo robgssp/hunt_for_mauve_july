@@ -26,7 +26,8 @@
             document-body
             get-element-by-id
             make-text-node
-            make-element))
+            make-element
+            current-time-ms))
 
 (define-foreign current-document
   "document" "get"
@@ -43,3 +44,6 @@
 (define-foreign make-element
   "document" "createElement"
   (ref string) -> (ref extern))
+(define-foreign current-time-ms
+  "document" "time"
+  -> f64)

@@ -6,14 +6,16 @@ window.addEventListener("load", async () => {
         innerWidth: () => window.innerWidth,
         innerHeight: () => window.innerHeight,
         requestAnimationFrame: (f) => window.requestAnimationFrame(f),
-        setTimeout: (f, delay) => window.setTimeout(f, delay)
+        setTimeout: (f, delay) => window.setTimeout(f, delay),
+        setInterval: (f, delay) => window.setInterval(f, delay)
       },
       document: {
         get: () => document,
         body: () => document.body,
         getElementById: (id) => document.getElementById(id),
         createTextNode: (text) => document.createTextNode(text),
-        createElement: (tag) => document.createElement(tag)
+        createElement: (tag) => document.createElement(tag),
+        time: () => performance.now()
       },
       element: {
         value: (elem) => elem.value,
@@ -66,6 +68,9 @@ window.addEventListener("load", async () => {
       },
       math: {
         random: () => Math.random()
+      },
+      debug: {
+        log: (msg) => console.log(msg)
       }
     });
   } catch(e) {

@@ -1,0 +1,26 @@
+#+title: Quiet Walking Dev Notes
+
+* Sensor Model
+
+Simulating individual phonons is unusably slow with Hoot. I'll need something higher level instead. So let's say I've got a "sonar ping" notion which has a radius and 1000(?) sample points. Whenever the ping sweeps past an object, that ping gets sent back home and the samples overlapping that object's bounding circle get removed.
+
+* Goals
+
+"Sink the enemy base", maybe: you're given a position for a defended base and you need to get in and sink it
+
+* Research
+
+Speed of sound in water: 0.81 NM/sec
+
+* Notes
+
+In-game units are nautical miles and seconds
+
+Object structure:
+- <entity>
+  - <rock>
+  - <ship>
+
+* Name
+
+"Quiet Walking" is one, though the movie isn't actually about submarines. Consider: "The Hunt for Mauve July"

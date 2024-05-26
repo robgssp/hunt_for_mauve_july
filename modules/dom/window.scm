@@ -26,7 +26,8 @@
             window-inner-width
             window-inner-height
             request-animation-frame
-            timeout))
+            timeout
+            interval))
 
 (define-foreign current-window
   "window" "get"
@@ -42,4 +43,7 @@
   (ref extern) -> none)
 (define-foreign timeout
   "window" "setTimeout"
+  (ref extern) f64 -> i32)
+(define-foreign interval
+  "window" "setInterval"
   (ref extern) f64 -> i32)
