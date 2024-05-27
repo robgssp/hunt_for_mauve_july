@@ -121,7 +121,9 @@
 (define player-steering 0.0)
 
 (define rocks
-  (list (make-entity (polar-vec2 0.5 (/ %pi 4)) 0.1 0 (make-rock))))
+  (list (make-entity (polar-vec2 0.5 (/ %pi 4)) 0.1 0 (make-rock))
+        (make-entity (polar-vec2 0.3 (- (/ %pi 4))) 0.1 0 (make-rock))
+        (make-entity (polar-vec2 0.4 (* 0.8 %pi)) 0.15 0 (make-rock))))
 
 (define entities (cons player rocks))
 
