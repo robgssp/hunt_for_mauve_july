@@ -1,0 +1,3 @@
+#+title: The Hunt for Mauve July
+
+A submarine game in Guile Hoot, for Spring Lisp Game Jam 2024. Uses Spritely's Hoot game jam template.
