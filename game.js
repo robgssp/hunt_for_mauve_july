@@ -75,8 +75,8 @@ window.addEventListener("load", async () => {
         closePath: (ctx) => ctx.closePath(),
         save: (ctx) => ctx.save(),
         restore: (ctx) => ctx.restore(),
-        translate: (x, y) => ctx.translate(x, y),
-        rotate: (angle) => ctx.rotate(angle),
+        translate: (ctx, x, y) => ctx.translate(x, y),
+        rotate: (ctx, angle) => ctx.rotate(angle),
       },
       math: {
         random: () => Math.random()

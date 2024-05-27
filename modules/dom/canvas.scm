@@ -40,7 +40,11 @@
             rect
             ellipse
             arc
-            close-path))
+            close-path
+            save-context
+            restore-context
+            translate
+            rotate))
 
 ;; HTMLCanvasElement
 (define-foreign get-context
@@ -102,3 +106,15 @@
 (define-foreign close-path
   "canvas" "closePath"
   (ref extern) -> none)
+(define-foreign save-context
+  "canvas" "save"
+  (ref extern) -> none)
+(define-foreign restore-context
+  "canvas" "restore"
+  (ref extern) -> none)
+(define-foreign translate
+  "canvas" "translate"
+  (ref extern) f64 f64 -> none)
+(define-foreign rotate
+  "canvas" "rotate"
+  (ref extern) f64 -> none)

@@ -58,6 +58,8 @@
 (define tick-interval 0.01)
 (define %pi (acos -1))
 
+(define image:player (make-image "assets/images/player.png"))
+
 ;; speed of sound in water in NM/sec
 (define speed-of-sound 0.81)
 
@@ -86,7 +88,7 @@
   entity?
   (origin entity-origin set-entity-origin!)
   (radius entity-radius)
-  (direction entity-direction)
+  (direction entity-direction set-entity-direction!)
   (data entity-data))
 
 (define-record-type <player>
@@ -104,7 +106,7 @@
   (time echo-time))
 
 ;;;
-;;; Main Loops
+;;; Tick Loop
 ;;;
 
 (define pings '())
@@ -115,6 +117,8 @@
 (define last-tick-time (current-time))
 
 (define player (make-entity (vec2 -0.1 0) 0.05 0.0 (make-player)))
+(define player-thrust 0.0)
+(define player-steering 0.0)
 
 (define rocks
   (list (make-entity (polar-vec2 0.5 (/ %pi 4)) 0.1 0 (make-rock))))
@@ -173,6 +177,7 @@
        (check-ping-samples! ping entity -1)))
    entities))
 
+(define ping-interval 2.0)
 (define last-ping-time (current-time))
 
 (define (tick)
@@ -190,13 +195,52 @@
                              ping))
                        pings)))
 
-    (when (> tick-time (+ last-ping-time 1.0))
-      (push! pings (make-ping* (entity-origin player) (entity-radius player)))
+    (when (> tick-time (+ last-ping-time ping-interval))
+      (push! pings (make-ping* (vec2-copy (entity-origin player)) (entity-radius player)))
       (set! last-ping-time tick-time))
+
+    (set-entity-direction! player (+ (entity-direction player)
+                                     (* player-steering interval)))
+    (vec2-add! (entity-origin player)
+               (polar-vec2 (* player-thrust interval)
+                           (entity-direction player)))
 
     (set! last-tick-time tick-time)))
 
 (define tick-callback (procedure->external tick))
+
+(define thrust-magnitude 0.2)
+(define steering-magnitude 1.5)
+(define (on-key-down event)
+  (let ((code (keyboard-event-code event)))
+    (cond
+     ((string=? code "KeyS")
+      (set! player-thrust (- (/ thrust-magnitude 2))))
+     ((string=? code "KeyW")
+      (set! player-thrust thrust-magnitude))
+     ((string=? code "KeyK")
+      (set! player-steering (- steering-magnitude)))
+     ((string=? code "Semicolon")
+      (set! player-steering steering-magnitude)))))
+
+(define (on-key-up event)
+  (let ((code (keyboard-event-code event)))
+    (cond
+     ((or (string=? code "KeyS")
+          (string=? code "KeyW"))
+      (set! player-thrust 0.0))
+
+     ((or (string=? code "KeyK")
+          (string=? code "Semicolon"))
+      (set! player-steering 0.0)))))
+
+(add-event-listener! (current-document) "keydown"
+                     (procedure->external on-key-down))
+(add-event-listener! (current-document) "keyup"
+                     (procedure->external on-key-up))
+;;;
+;;; Rendering
+;;;
 
 (define frame-time (current-time))
 (define last-frame-time (current-time))
@@ -205,6 +249,7 @@
 (define view-radius 1.0)
 
 (define (project-point! point)
+  (vec2-sub! point view-origin)
   (vec2-mul-scalar! point (* game-height 0.5 (/ 1 view-radius)))
   (vec2-add! point (vec2 (/ game-width 2) (/ game-height 2))))
 
@@ -213,17 +258,17 @@
 
 (define (draw-ping ping)
   (set-fill-color! context "#ff8000")
-  (vector-for-each1
-   (lambda (i v)
-     (when v
-       (let* ((angle (* 2 %pi (/ i (vector-length (ping-samples ping)))))
-              (loc (polar-vec2 (ping-radius ping) angle)))
+  ;; (vector-for-each1
+  ;;  (lambda (i v)
+  ;;    (when v
+  ;;      (let* ((angle (* 2 %pi (/ i (vector-length (ping-samples ping)))))
+  ;;             (loc (polar-vec2 (ping-radius ping) angle)))
 
-         (vec2-add! loc (ping-origin ping))
-         (project-point! loc)
+  ;;        (vec2-add! loc (ping-origin ping))
+  ;;        (project-point! loc)
 
-         (fill-rect context (vec2-x loc) (vec2-y loc) 1 1))))
-   (ping-samples ping))
+  ;;        (fill-rect context (vec2-x loc) (vec2-y loc) 1 1))))
+  ;;  (ping-samples ping))
 
   (set-stroke-color! context "#ff8000")
 
@@ -245,11 +290,7 @@
     (ellipse context (vec2-x pos) (vec2-y pos) size size 0.0 0.0 (* 2 %pi) 0)
     (stroke context)))
 
-;; (define (aged-out echo)
-;;   (let ((render-time (+ (echo-time echo) (distance (entity-origin player) (echo-origin echo)))))
-;;     (> render-time )))
-
-(define max-echo-age 0.5)
+(define max-echo-age 2.5)
 
 (define (draw-echo echo)
   (let ((render-time (+ (echo-time echo) (distance (entity-origin player) (echo-origin echo))))
@@ -272,15 +313,27 @@
   (set-fill-color! context "#000000")
   (fill-rect context 0 0 game-width game-height)
 
-;;; sonar
+  ;; player
+  (set! view-origin (entity-origin player))
+  (let ((pos (vec2-copy (entity-origin player)))
+        (angle (entity-direction player))
+        (screen-size 15.0))
+    (project-point! pos)
+    (save-context context)
+    (translate context (vec2-x pos) (vec2-y pos))
+    (rotate context (+ angle (/ %pi 2))            )
+    (draw-image context image:player 0.0 0.0 64.0 64.0 (- screen-size) (- screen-size) (* 2 screen-size) (* 2 screen-size))
+    (restore-context context))
+
+  ;; sonar
   (for-each draw-ping pings)
 
   (set! echoes (filter identity (map draw-echo echoes)))
 
-;;; rocks (for debugging)
-  (for-each draw-rock rocks)
+  ;; rocks (for debugging)
+  ;; (for-each draw-rock rocks)
 
-;;; panel
+  ;; panel
   (set-fill-color! context "#404040")
 
   (begin-path context)
@@ -289,13 +342,13 @@
   (close-path context)
   (fill context "evenodd")
 
-;;; debug
-  (set-fill-color! context "#ffffff")
-  (set-font! context "bold 12px monospace")
-  (set-text-align! context "left")
-  (fill-text context (string-append (number->string (/ 1 (- frame-time last-frame-time)))
-                                    " FPS")
-             20.0 20.0)
+  ;; debug
+  ;; (set-fill-color! context "#ffffff")
+  ;; (set-font! context "bold 12px monospace")
+  ;; (set-text-align! context "left")
+  ;; (fill-text context (string-append (number->string (/ 1 (- frame-time last-frame-time)))
+  ;;                                   " FPS")
+  ;;            20.0 20.0)
 
   (set! last-frame-time frame-time)
 
