@@ -71,7 +71,12 @@ window.addEventListener("load", async () => {
         beginPath: (ctx) => ctx.beginPath(),
         rect: (ctx, x, y, w, h) => ctx.rect(x, y, w, h),
         ellipse: (ctx, x, y, radiusX, radiusY, rotation, startAngle, endAngle, counterclockwise) => ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, (counterclockwise > 0)),
-        closePath: (ctx) => ctx.closePath()
+        arc: (ctx, x, y, radius, startAngle, endAngle, ccw) => ctx.arc(ctx, x, y, radius, startAngle, endAngle, ccw > 0),
+        closePath: (ctx) => ctx.closePath(),
+        save: (ctx) => ctx.save(),
+        restore: (ctx) => ctx.restore(),
+        translate: (x, y) => ctx.translate(x, y),
+        rotate: (angle) => ctx.rotate(angle),
       },
       math: {
         random: () => Math.random()

@@ -39,6 +39,7 @@
             begin-path
             rect
             ellipse
+            arc
             close-path))
 
 ;; HTMLCanvasElement
@@ -95,6 +96,9 @@
 (define-foreign ellipse
   "canvas" "ellipse"
   (ref extern) f64 f64 f64 f64 f64 f64 f64 i32 -> none)
+(define-foreign arc
+  "canvas" "arc"
+  (ref extern) f64 f64 f64 f64 f64 i32 -> none)
 (define-foreign close-path
   "canvas" "closePath"
   (ref extern) -> none)

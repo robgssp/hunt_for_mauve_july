@@ -23,6 +23,10 @@ Object structure:
   - <enemy>
   - <base>
 
+lolnvm, the version of Hoot in guix apparently doesn't have inheritance! tight. gonna press on rather than trying to upgrade for time constraints.
+
+How do I want to structure enemies/rocks instead? Let's say <entity> keeps a =data= field to 
+
 * Name
 
 "Quiet Walking" is one, though the movie isn't actually about submarines. Consider: "The Hunt for Mauve July"
@@ -40,3 +44,5 @@ I'm missing something about how paths in canvas work. right now filling an ellip
   Ellipse 4.94e-322 4.94e-322 2.47e-322 3.7e-322 0.7853981633974483 0 6.283185307179586 0
 
   which I'm assuming is a miscompile. Lesson learned for now, ensure I'm passing floats to extern calls that need floats.
+
+euclidean-remainder's missing, which is making my life real difficult
